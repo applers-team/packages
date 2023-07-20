@@ -1,0 +1,34 @@
+{
+  "include": [
+    "src/**/*"
+  ],
+  "compilerOptions": {
+    "outDir": "dist",
+    "baseUrl": ".",
+    "incremental": true,
+    "target": "esnext",
+    "composite": true,
+    "module": "commonjs",
+    "lib": [
+      "dom",
+      "ESNext"
+    ],
+    "allowJs": true,
+    "checkJs": false,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "useUnknownInCatchVariables": false,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "types": [
+      "node"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "emitDecoratorMetadata": true
+  }
+}

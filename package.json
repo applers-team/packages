@@ -1,0 +1,17 @@
+{
+  "name": "@applers/packages",
+  "version": "0.0.1",
+  "description": "",
+  "author": "Can Pekesen <cpekesen@applers.de>",
+  "license": "UNLICENSED",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "publish": "yarn workspaces foreach run publish"
+  },
+  "packageManager": "yarn@3.6.1"
+}

@@ -1,0 +1,45 @@
+{
+  "name": "@applers/auth-magic-link-nest",
+  "version": "0.0.1-dev7",
+  "description": "",
+  "author": "Can Pekesen <cpekesen@applers.de>",
+  "license": "UNLICENSED",
+  "main": "dist/src",
+  "scripts": {
+    "publish": "yarn npm publish",
+    "prepublish": "yarn build",
+    "build": "tsc -b"
+  },
+  "publishConfig": {
+    "registry": "https://gitlab.com/api/v4/projects/47840319/packages/npm"
+  },
+  "dependencies": {
+    "@golevelup/nestjs-common": "^1.4.4",
+    "@golevelup/nestjs-modules": "^0.6.1",
+    "@nestjs/common": "^9.2.0",
+    "@nestjs/core": "^9.2.0",
+    "@nestjs/jwt": "^9.0.0",
+    "@nestjs/passport": "^9.0.0",
+    "cookie-parser": "^1.4.6",
+    "http-status-codes": "^2.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "passport": "^0.6.0",
+    "passport-magic-link": "^2.1.0",
+    "rxjs": "^7.5.7"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^9.1.5",
+    "@nestjs/schematics": "^9.0.3",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/express": "^4.17.14",
+    "@types/jsonwebtoken": "^8.5.9",
+    "@types/node": "^16.0.0",
+    "prettier": "^2.3.2",
+    "reflect-metadata": "^0.1.13",
+    "ts-essentials": "^9.3.0",
+    "ts-loader": "^9.2.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4",
+    "webpack": "^5.75.0"
+  }
+}
