@@ -22,7 +22,7 @@ export interface AuthMagicLinkUtil<DBUser = any> {
     userId: string,
     refreshToken: string,
   ) => void | Promise<void>;
-  sendMagicLink: (token: string, email: string) => void | Promise<void>;
+  sendMagicLink: (token: string, user: DBUser) => void | Promise<void>;
 }
 
 export interface AuthMagicLinkModuleOptions {

@@ -25,7 +25,7 @@ export class MagicLinkStrategy extends PassportStrategy(Strategy) {
         ttl: magicLinkToken.ttl,
       },
       async (user: MagicLinkUser, token: string): Promise<void> => {
-        this.util.sendMagicLink(token, user.email);
+        this.util.sendMagicLink(token, user);
       },
       // this is the first function which is executed
       // the return value is provided to the function above
