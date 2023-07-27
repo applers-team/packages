@@ -1,4 +1,5 @@
 import { RouteInfo } from '@nestjs/common/interfaces';
+import { RequestMethod } from '@nestjs/common';
 
 interface TokenConfig {
   secret: string;
@@ -21,6 +22,9 @@ export interface AuthMagicLinkPathsConfig {
     exclude: (string | RouteInfo)[];
   };
 }
+
+// somehow we need to state methods via this const/enum
+export const ExcludedRouteMethod = RequestMethod;
 
 export interface AuthMagicLinkConfig {
   paths: AuthMagicLinkPathsConfig;
