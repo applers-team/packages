@@ -26,14 +26,17 @@ export class MagicLinkStrategy extends PassportStrategy(Strategy) {
         ttl: magicLinkToken.ttl,
       },
       async (user: MagicLinkUser, token: string): Promise<void> => {
-        this.util.sendMagicLink(token, user, (frontendUrl) =>
-          URI(frontendUrl)
-            .segment([
-              this.config.paths.proxy ?? '',
-              this.config.paths.magicLink.validate,
-            ])
-            .query({ token })
-            .toString(),
+        this.util.sendMagicLink(
+          user,
+          (frontendUrl) =>
+            URI(frontendUrl)
+              .segment([
+                this.config.paths.proxy ?? '',
+                this.config.paths.magicLink.validate,
+              ])
+              .query({ token })
+              .toString(),
+          token,
         );
       },
       // this is the first function which is executed

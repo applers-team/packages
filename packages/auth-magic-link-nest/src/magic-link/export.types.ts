@@ -25,9 +25,9 @@ export interface AuthMagicLinkUtil<DBUser = any> {
     refreshTokenHash: string,
   ) => void | Promise<void>;
   sendMagicLink: (
-    token: string,
     user: DBUser,
     loginLinkGenerator: LoginLinkGeneratorFunction,
+    token: string,
   ) => void | Promise<void>;
 }
 
