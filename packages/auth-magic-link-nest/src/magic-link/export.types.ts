@@ -14,15 +14,15 @@ export interface AuthMagicLinkUtil<DBUser = any> {
   getUserById: (userId: string) => Promise<DBUser>;
   isRefreshTokenActive: (
     userId: string,
-    refreshToken: string,
+    refreshTokenHash: string,
   ) => boolean | Promise<boolean>;
   addActiveRefreshTokenTo: (
     userId: string,
-    refreshToken: string,
+    refreshTokenHash: string,
   ) => void | Promise<void>;
   revokeRefreshTokenFrom: (
     userId: string,
-    refreshToken: string,
+    refreshTokenHash: string,
   ) => void | Promise<void>;
   sendMagicLink: (
     token: string,

@@ -48,7 +48,9 @@ export class LoginController {
     this.cookieTokenService.removeCookies(response);
     await this.util.revokeRefreshTokenFrom(
       req.userId,
-      req.cookies[this.config.refreshToken.cookieKey],
+      this.cookieTokenService.hashToken(
+        req.cookies[this.config.refreshToken.cookieKey],
+      ),
     );
   }
 }

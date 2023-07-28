@@ -71,7 +71,7 @@ export class AuthenticationMiddleware implements NestMiddleware {
         // 2b.a.5 remove old Refresh token from whitelist in user
         await this.util.revokeRefreshTokenFrom(
           tokenPayload.userId,
-          refreshToken,
+          this.cookieTokenService.hashToken(refreshToken),
         );
 
         // 2b.a.6 extract user and append to Request
@@ -87,7 +87,7 @@ export class AuthenticationMiddleware implements NestMiddleware {
           if (tokenPayload?.userId) {
             await this.util.revokeRefreshTokenFrom(
               tokenPayload.userId,
-              refreshToken,
+              this.cookieTokenService.hashToken(refreshToken),
             );
           }
         }
@@ -136,7 +136,7 @@ export class AuthenticationMiddleware implements NestMiddleware {
     if (
       !(await this.util.isRefreshTokenActive(
         tokenPayload.userId,
-        refreshToken!,
+        this.cookieTokenService.hashToken(refreshToken!),
       ))
     ) {
       throw new Error('Refresh Token not valid in user whitelist');

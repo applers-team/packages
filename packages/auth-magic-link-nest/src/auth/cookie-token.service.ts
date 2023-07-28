@@ -8,6 +8,7 @@ import {
 } from '../module.util';
 import { Response } from 'express';
 import { FullAuthMagicLinkConfig } from '../types';
+import { createHash } from 'crypto';
 
 export interface TokenGenerationResponse {
   value: string;
@@ -30,6 +31,10 @@ export class CookieTokenService {
       sameSite: 'strict',
       path: '/',
     };
+  }
+
+  hashToken(token: string): string {
+    return createHash('sha3-256').update(token).digest('base64');
   }
 
   async prepareResponseForClearingTokens(response: Response) {
@@ -106,7 +111,7 @@ export class CookieTokenService {
       },
     );
 
-    await this.util.addActiveRefreshTokenTo(userId, token);
+    await this.util.addActiveRefreshTokenTo(userId, this.hashToken(token));
 
     return {
       value: token,
