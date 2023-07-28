@@ -13,6 +13,7 @@ interface OAuthTokenConfig {
 }
 
 export interface AuthMagicLinkPathsConfig {
+  proxy?: string;
   magicLink: {
     request: string;
     validate: string;
