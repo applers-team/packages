@@ -146,6 +146,8 @@ export class AuthenticationMiddleware implements NestMiddleware {
   }
 
   private async attachUserToRequest(req: Request, userId: string) {
+    req.userId = userId;
+
     switch (this.config.attachToRequest) {
       case 'userId': {
         req.user = { id: userId };

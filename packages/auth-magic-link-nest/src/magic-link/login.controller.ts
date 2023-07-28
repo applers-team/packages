@@ -1,4 +1,4 @@
-import { Controller, Res, UseGuards } from '@nestjs/common';
+import { Controller, Req, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { CookieTokenService } from '../auth/cookie-token.service';
 import { RequestMagicLinkGuard } from './request-magic-link.guard';
@@ -41,7 +41,14 @@ export class LoginController {
     return;
   }
 
-  logout(@Res({ passthrough: true }) response: Response) {
+  async logout(
+    @Req() req: any,
+    @Res({ passthrough: true }) response: Response,
+  ) {
     this.cookieTokenService.removeCookies(response);
+    await this.util.revokeRefreshTokenFrom(
+      req.userId,
+      req.cookies[this.config.refreshToken.cookieKey],
+    );
   }
 }
