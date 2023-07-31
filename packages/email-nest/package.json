@@ -1,0 +1,36 @@
+{
+  "name": "@applers/email-nest",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Can Pekesen <cpekesen@applers.de>",
+  "license": "UNLICENSED",
+  "main": "dist/src",
+  "scripts": {
+    "publish": "yarn npm publish",
+    "prepublish": "yarn build",
+    "build": "tsc -b"
+  },
+  "publishConfig": {
+    "registry": "https://gitlab.com/api/v4/projects/47840319/packages/npm"
+  },
+  "dependencies": {
+    "@golevelup/nestjs-common": "^2.0.0",
+    "@golevelup/nestjs-modules": "^0.7.0",
+    "@nestjs/common": "^10.1.2",
+    "@nestjs/core": "^10.1.2",
+    "nodemailer": "^6.9.4",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^10.1.10",
+    "@nestjs/schematics": "^10.0.1",
+    "@types/node": "^16.0.0",
+    "@types/nodemailer": "^6.4.9",
+    "prettier": "^2.3.2",
+    "reflect-metadata": "^0.1.13",
+    "ts-loader": "^9.4.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6",
+    "webpack": "^5.88.2"
+  }
+}
