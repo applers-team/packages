@@ -1,5 +1,5 @@
 import { isString, pickBy } from 'lodash';
-import mongoose, { PipelineStage } from 'mongoose';
+import { PipelineStage } from 'mongoose';
 import {
   IncludeFilterSuffix,
   QueryFilterConcreteParams,
@@ -8,12 +8,14 @@ import {
 import {
   AggregationPaginatedQueryPipelineOptions,
   PaginatedMongoQueryOptions,
+  PaginatedQueryModel,
+  PaginatedQueryResult,
 } from './types';
 
 export function paginatedMongoQuery<T = any>(
-  model: mongoose.AggregatePaginateModel<T>,
+  model: PaginatedQueryModel<T>,
   options: PaginatedMongoQueryOptions,
-): Promise<mongoose.AggregatePaginateResult<T>> {
+): Promise<PaginatedQueryResult<T>> {
   const { page, pageSize, ...aggregationPaginatedQueryPipelineOptions } =
     options;
 
