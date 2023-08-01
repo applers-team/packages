@@ -1,0 +1,29 @@
+{
+  "name": "@applers/paginated-query-builder",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Can Pekesen <cpekesen@applers.de>",
+  "license": "UNLICENSED",
+  "main": "dist/src",
+  "scripts": {
+    "start": "tsc --watch",
+    "publish": "yarn npm publish",
+    "prepublish": "yarn build",
+    "build": "tsc -b"
+  },
+  "publishConfig": {
+    "registry": "https://gitlab.com/api/v4/projects/47840319/packages/npm"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.196",
+    "@types/node": "^16.0.0",
+    "prettier": "^2.3.2",
+    "ts-loader": "^9.4.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6",
+    "webpack": "^5.88.2"
+  }
+}
