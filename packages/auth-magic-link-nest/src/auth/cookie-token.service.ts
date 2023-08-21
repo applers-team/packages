@@ -43,14 +43,17 @@ export class CookieTokenService {
   }
 
   async prepareResponseWithNewTokens(response: Response, userId: string) {
-    const accessTokenCookie = await this.newAccessTokenFor(userId);
+    const [accessTokenCookie, refreshTokenCookie] = await Promise.all([
+      this.newAccessTokenFor(userId),
+      this.newRefreshTokenFor(userId),
+    ]);
+
     response.cookie(
       this.config.accessToken.cookieKey,
       accessTokenCookie.value,
       accessTokenCookie.cookieOptions,
     );
 
-    const refreshTokenCookie = await this.newRefreshTokenFor(userId);
     response.cookie(
       this.config.refreshToken.cookieKey,
       refreshTokenCookie.value,
