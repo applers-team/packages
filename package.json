@@ -4,7 +4,6 @@
   "description": "",
   "author": "Can Pekesen <cpekesen@applers.de>",
   "license": "UNLICENSED",
-  "private": true,
   "workspaces": {
     "packages": [
       "packages/*"
