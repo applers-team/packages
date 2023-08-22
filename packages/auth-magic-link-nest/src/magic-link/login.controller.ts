@@ -1,4 +1,4 @@
-import { Controller, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Req, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { CookieTokenService } from '../auth/cookie-token.service';
 import { RequestMagicLinkGuard } from './request-magic-link.guard';
@@ -10,6 +10,7 @@ import {
 } from '../module.util';
 import { AuthMagicLinkUtil } from './export.types';
 import { FullAuthMagicLinkConfig } from '../types';
+import { MagicLinkValidationFailure } from '../auth/exception.middleware';
 
 @Controller()
 export class LoginController {
@@ -24,6 +25,7 @@ export class LoginController {
   requestMagicLink() {}
 
   @UseGuards(ValidateMagicLinkGuard)
+  @UseFilters(MagicLinkValidationFailure)
   async validate(
     @Res({ passthrough: true }) response: Response,
     @ExtractEmailFromMagicLink() email: string,

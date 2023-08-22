@@ -32,7 +32,7 @@ export class MagicLinkStrategy extends PassportStrategy(Strategy) {
             URI(frontendUrl)
               .segment([
                 this.config.paths.proxy ?? '',
-                this.config.paths.magicLink.validate,
+                this.config.paths.magicLink.validate.success,
               ])
               .query({ token })
               .toString(),

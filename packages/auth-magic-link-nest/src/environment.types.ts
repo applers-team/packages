@@ -16,7 +16,10 @@ export interface AuthMagicLinkPathsConfig {
   proxy?: string;
   magicLink: {
     request: string;
-    validate: string;
+    validate: {
+      success: string;
+      failure?: string;
+    };
     logout: string;
   };
   auth?: {
