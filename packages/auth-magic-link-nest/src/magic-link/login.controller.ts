@@ -30,7 +30,7 @@ export class LoginController {
     @Res({ passthrough: true }) response: Response,
     @ExtractEmailFromMagicLink() email: string,
   ) {
-    const { redirectUrl } = this.config;
+    const { frontendUrls } = this.config;
 
     const { userId } = await this.util.findOrCreateByEmail({ email });
 
@@ -39,7 +39,7 @@ export class LoginController {
       userId,
     );
 
-    response.redirect(redirectUrl);
+    response.redirect(frontendUrls.auth.redirect.success);
     return;
   }
 

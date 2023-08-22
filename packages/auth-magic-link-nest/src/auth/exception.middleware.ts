@@ -29,10 +29,11 @@ export class MagicLinkValidationFailure implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
 
-    const redirectPath = this.config.paths.magicLink.validate.failure;
-    if (redirectPath) {
-      this.cookieTokenService.removeCookies(response);
-      response.status(status).redirect(redirectPath);
+    this.cookieTokenService.removeCookies(response);
+
+    const failureRedirectPath = this.config.frontendUrls.auth.redirect.failure;
+    if (failureRedirectPath) {
+      response.status(status).redirect(failureRedirectPath);
     } else {
       response.status(HttpStatus.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
     }

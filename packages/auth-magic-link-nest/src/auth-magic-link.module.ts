@@ -112,7 +112,7 @@ export class AuthMagicLinkModule
       ) as PropertyDescriptor,
     );
 
-    Get(paths.magicLink.validate.success)(
+    Get(paths.magicLink.validate)(
       LoginController,
       LoginController.prototype.validate.name,
       Object.getOwnPropertyDescriptor(
@@ -138,7 +138,7 @@ export class AuthMagicLinkModule
       .apply(AuthenticationMiddleware)
       .exclude(
         paths.magicLink.request,
-        paths.magicLink.validate.success,
+        paths.magicLink.validate,
         ...(paths.auth?.exclude ?? []),
       )
       .forRoutes('*');

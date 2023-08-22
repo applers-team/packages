@@ -16,10 +16,7 @@ export interface AuthMagicLinkPathsConfig {
   proxy?: string;
   magicLink: {
     request: string;
-    validate: {
-      success: string;
-      failure?: string;
-    };
+    validate: string;
     logout: string;
   };
   auth?: {
@@ -27,12 +24,21 @@ export interface AuthMagicLinkPathsConfig {
   };
 }
 
+export interface AuthMagicLinkFrontendUrlsConfig {
+  auth: {
+    redirect: {
+      success: string;
+      failure?: string;
+    };
+  };
+}
+
 // somehow we need to state methods via this const/enum
 export const ExcludedRouteMethod = RequestMethod;
 
 export interface AuthMagicLinkConfig {
+  frontendUrls: AuthMagicLinkFrontendUrlsConfig;
   paths: AuthMagicLinkPathsConfig;
-  redirectUrl: string;
   httpsOnly: boolean;
   magicLinkToken: TokenConfig;
   accessToken: OAuthTokenConfig;
