@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { strategyNames } from '../constants';
+import { InjectAuthMagicLinkConfig } from '../module.util';
+import { FullAuthMagicLinkConfig } from '../types';
 
 @Injectable()
 export class ValidateMagicLinkGuard extends AuthGuard(strategyNames.magicLink) {
-  constructor() {
+  constructor(@InjectAuthMagicLinkConfig() config: FullAuthMagicLinkConfig) {
     super({
       action: 'acceptToken',
-      // any other options can be provided here
-      allowReuse: false,
+      allowReuse: config.allowReuseOfMagicLink,
     });
   }
 }

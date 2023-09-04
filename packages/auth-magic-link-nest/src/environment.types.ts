@@ -37,6 +37,7 @@ export interface AuthMagicLinkFrontendUrlsConfig {
 export const ExcludedRouteMethod = RequestMethod;
 
 export interface AuthMagicLinkConfig {
+  allowReuseOfMagicLink?: boolean;
   frontendUrls: AuthMagicLinkFrontendUrlsConfig;
   paths: AuthMagicLinkPathsConfig;
   httpsOnly: boolean;

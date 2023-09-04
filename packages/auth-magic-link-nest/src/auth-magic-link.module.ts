@@ -57,6 +57,7 @@ export class AuthMagicLinkModule
         useFactory: (options: AuthMagicLinkModuleOptions) => {
           const config: FullAuthMagicLinkConfig = {
             ...options.config,
+            allowReuseOfMagicLink: !!options.config.allowReuseOfMagicLink,
             paths: {
               ...options.config.paths,
               auth: options.config.paths.auth ?? {
