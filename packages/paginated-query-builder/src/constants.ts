@@ -11,4 +11,4 @@ export const DefaultSortingKeyInUrl = 'sort';
 
 export const DefaultFilterKeyInUrl = 'filter';
 
-export const DefaultSearchKeyInUrl = 'sort';
+export const DefaultSearchKeyInUrl = 'search';
