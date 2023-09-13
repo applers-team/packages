@@ -10,10 +10,10 @@ export type PopulationOptions = {
 };
 
 export type AggregationPaginatedQueryPipelineOptions = {
-  populate: PopulationOptions[];
-  filter: QueryFilterParams;
-  search: string;
-  sort: SortOrder[];
+  populate?: PopulationOptions[];
+  filter?: QueryFilterParams;
+  search?: string;
+  sort?: SortOrder[];
 };
 
 export type PaginatedMongoQueryOptions =
