@@ -12,11 +12,13 @@ export type QueryFilterConcreteParams = Record<
 export type QueryFilterParams = {
   normalFilter: QueryFilterConcreteParams;
   idFilter: QueryFilterConcreteParams;
+  regexFilter: Record<string, string>;
 };
 
 const FilterPrefix = 'filter.';
 export const IncludeFilterSuffix = '._includes_';
 export const IdFilterSuffix = '._id_';
+export const RegexFilterSuffix = '._regex_';
 
 // https://stackoverflow.com/a/175787/5464761
 function isNumeric(str: string) {
@@ -39,11 +41,17 @@ export const QueryFilter = createParamDecorator(
     );
     const normalFilterParams = pickBy(
       rawFilters,
-      (value, key) => !key.includes(IdFilterSuffix),
+      (value, key) =>
+        !key.includes(IdFilterSuffix) && !key.includes(RegexFilterSuffix),
     );
+
     const idFilterParams = mapKeys(
       pickBy(rawFilters, (value, key) => key.includes(IdFilterSuffix)),
       (_, key) => key.replace(IdFilterSuffix, ''),
+    );
+    const regexFilterParams = mapKeys(
+      pickBy(rawFilters, (value, key) => key.includes(RegexFilterSuffix)),
+      (_, key) => key.replace(RegexFilterSuffix, ''),
     );
 
     return {
@@ -54,6 +62,7 @@ export const QueryFilter = createParamDecorator(
         prepareForPossibleObjectId,
         prepareForPossibleDate,
       ]),
+      regexFilter: regexFilterParams,
     };
   },
 );
