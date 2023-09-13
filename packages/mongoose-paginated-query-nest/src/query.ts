@@ -107,7 +107,10 @@ function aggregationPopulate(
     ...(!targetIsArray
       ? [
           {
-            $unwind: `$${localField}`,
+            $unwind: {
+              path: `$${localField}`,
+              preserveNullAndEmptyArrays: true,
+            },
           },
         ]
       : []),
