@@ -1,4 +1,4 @@
-import { isString, pickBy } from 'lodash';
+import { isString, mapValues, pickBy } from 'lodash';
 import { PipelineStage } from 'mongoose';
 import {
   IncludeFilterSuffix,
@@ -55,6 +55,9 @@ function aggregationPaginatedQueryPipeline(
     ...(options.filter && options.filter.normalFilter
       ? aggregationQuery(options.filter.normalFilter)
       : []),
+    ...(options.filter?.regexFilter
+      ? aggregationRegexMatch(options.filter.regexFilter)
+      : []),
     ...(options.sort ? aggregationSort(options.sort) : []),
   ];
 }
@@ -107,7 +110,10 @@ function aggregationPopulate(
     ...(!targetIsArray
       ? [
           {
-            $unwind: `$${localField}`,
+            $unwind: {
+              path: `$${localField}`,
+              preserveNullAndEmptyArrays: true,
+            },
           },
         ]
       : []),
@@ -139,6 +145,43 @@ function aggregationQuery(filter: QueryFilterConcreteParams): PipelineStage[] {
             }),
             {},
           ),
+        },
+      },
+    ];
+  } else {
+    return [];
+  }
+}
+
+function aggregationRegexMatch(
+  filter: QueryFilterConcreteParams,
+): PipelineStage[] {
+  if (Object.keys(filter).length > 0) {
+    const normalFilters = pickBy(
+      filter,
+      (value, key) => !key.endsWith(IncludeFilterSuffix),
+    );
+    const includeFilters = pickBy(filter, (value, key) =>
+      key.endsWith(IncludeFilterSuffix),
+    );
+    return [
+      {
+        $match: {
+          ...mapValues(normalFilters, (value) => ({
+            $regex: new RegExp(value),
+          })),
+          // ...Object.keys(includeFilters).reduce(
+          //   (includeFilter, currentFilter) => ({
+          //     ...includeFilter,
+          //     [currentFilter.substring(
+          //       0,
+          //       currentFilter.length - IncludeFilterSuffix.length,
+          //     )]: {
+          //       $in: includeFilters[currentFilter],
+          //     },
+          //   }),
+          //   {},
+          // ),
         },
       },
     ];
