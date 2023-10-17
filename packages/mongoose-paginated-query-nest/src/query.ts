@@ -168,7 +168,7 @@ function aggregationRegexMatch(
       {
         $match: {
           ...mapValues(normalFilters, (value) => ({
-            $regex: new RegExp(value),
+            $regex: new RegExp(value, 'i'),
           })),
           // ...Object.keys(includeFilters).reduce(
           //   (includeFilter, currentFilter) => ({
