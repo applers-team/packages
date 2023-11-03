@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { decode, verify } from 'jsonwebtoken';
+import { verify } from 'jsonwebtoken';
 import {
   InjectAuthMagicLinkConfig,
   InjectAuthMagicLinkUtil,
@@ -10,6 +10,7 @@ import { ReasonPhrases } from 'http-status-codes';
 import { CookieTokenService } from './cookie-token.service';
 import { TokenPayload } from '../magic-link/types';
 import { FullAuthMagicLinkConfig } from '../types';
+import { attachUserToRequest, extractAuthInfoFromRequest } from './util';
 
 const RefreshTokenValidationGracePeriodInSeconds = 5;
 const ClearRefreshTokenValidationInSeconds = 60;
@@ -85,12 +86,10 @@ export class AuthenticationMiddleware implements NestMiddleware {
     abort execution and return "Forbidden"
    */
   async use(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const accessToken = req.cookies[this.config.accessToken.cookieKey];
-    const refreshToken = req.cookies[this.config.refreshToken.cookieKey];
-
-    const userId =
-      (decode(accessToken) as unknown as TokenPayload)?.userId ??
-      (decode(refreshToken) as unknown as TokenPayload)?.userId;
+    const { userId, accessToken, refreshToken } = extractAuthInfoFromRequest(
+      req,
+      this.config,
+    );
 
     // 1. check if userId and (accessToken OR refreshToken) available
     //   1.a yes => continue with 2
@@ -108,7 +107,7 @@ export class AuthenticationMiddleware implements NestMiddleware {
     */
     try {
       await this.validateAccessToken(accessToken);
-      await this.attachUserToRequest(req, userId);
+      await attachUserToRequest(req, userId, this.config, this.util);
 
       return next();
     } catch {
@@ -182,7 +181,7 @@ export class AuthenticationMiddleware implements NestMiddleware {
         this.refreshTokenValidationInGracePeriod(refreshToken) &&
         (await ongoingValidations[refreshToken].isValid)
       ) {
-        await this.attachUserToRequest(req, userId);
+        await attachUserToRequest(req, userId, this.config, this.util);
 
         return next();
       } else {
@@ -260,24 +259,6 @@ export class AuthenticationMiddleware implements NestMiddleware {
       return tokenPayload;
     } else {
       throw new Error('Refresh Token not passed to validation');
-    }
-  }
-
-  private async attachUserToRequest(req: Request, userId: string) {
-    req.userId = userId;
-
-    switch (this.config.attachToRequest) {
-      case 'userId': {
-        req.user = { id: userId };
-        return;
-      }
-      case 'userObject': {
-        req.user = await this.util.getUserById(userId);
-        return;
-      }
-      default: {
-        return;
-      }
     }
   }
 }

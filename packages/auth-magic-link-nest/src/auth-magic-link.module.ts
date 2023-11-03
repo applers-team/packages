@@ -92,6 +92,10 @@ export class AuthMagicLinkModule
         },
       },
     ],
+    exports: [
+      AuthMagicLinkUtilInjectionToken,
+      AuthMagicLinkConfigInjectionToken,
+    ],
   })
   implements NestModule
 {
