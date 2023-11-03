@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 export type PopulationOptions = {
   localField: string;
   targetCollection: string;
+  projection?: Record<string, 1 | -1>;
   targetIsArray?: boolean;
   targetField?: string;
 };

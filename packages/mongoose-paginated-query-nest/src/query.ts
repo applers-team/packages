@@ -10,6 +10,7 @@ import {
   PaginatedMongoQueryOptions,
   PaginatedQueryModel,
   PaginatedQueryResult,
+  PopulationOptions,
 } from './types';
 
 export function paginatedMongoQuery<T = any>(
@@ -46,6 +47,7 @@ function aggregationPaginatedQueryPipeline(
             aggregationPopulate(
               population.localField,
               population.targetCollection,
+              population.projection,
               population.targetIsArray,
               population.targetField,
             ),
@@ -95,6 +97,7 @@ function aggregationSort(sortOrder: SortOrder[]): PipelineStage[] {
 function aggregationPopulate(
   localField: string,
   targetCollection: string,
+  projection: PopulationOptions['projection'] = {},
   targetIsArray = false,
   targetField = '_id',
 ): PipelineStage[] {
@@ -105,6 +108,13 @@ function aggregationPopulate(
         localField: localField,
         foreignField: targetField,
         as: localField,
+        ...(Object.keys(projection).length > 0 && {
+          pipeline: [
+            {
+              $project: projection,
+            },
+          ],
+        }),
       },
     },
     ...(!targetIsArray
