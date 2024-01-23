@@ -1,6 +1,5 @@
-import { QueryFilterParams } from './decorators/query-filter.decorator';
-import { SortOrder } from './decorators/query-sort.decorator';
-import mongoose from 'mongoose';
+import { QueryFilterParams, SortOrder } from './decorators';
+import mongoose, { PipelineStage } from 'mongoose';
 
 export type PopulationOptions = {
   localField: string;
@@ -10,11 +9,23 @@ export type PopulationOptions = {
   targetField?: string;
 };
 
+export type AggregationPaginatedQueryPipelineCustomStages = {
+  preSearch?: PipelineStage[];
+  preIdFilter?: PipelineStage[];
+  prePopulate?: PipelineStage[];
+  preFilter?: PipelineStage[];
+  preRegexFilter?: PipelineStage[];
+  preSort?: PipelineStage[];
+  first?: PipelineStage[];
+  last?: PipelineStage[];
+};
+
 export type AggregationPaginatedQueryPipelineOptions = {
   populate?: PopulationOptions[];
   filter?: QueryFilterParams;
   search?: string;
   sort?: SortOrder[];
+  customStages?: AggregationPaginatedQueryPipelineCustomStages;
 };
 
 export type PaginatedMongoQueryOptions =

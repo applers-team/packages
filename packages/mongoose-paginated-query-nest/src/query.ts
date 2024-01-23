@@ -13,6 +13,15 @@ import {
   PopulationOptions,
 } from './types';
 
+/*
+ * stage ids:
+ * 1. search
+ * 2. idFilter
+ * 3. populate
+ * 4. filter
+ * 5. regexFilter
+ * 6. sort
+ * */
 export function paginatedMongoQuery<T = any>(
   model: PaginatedQueryModel<T>,
   options: PaginatedMongoQueryOptions,
@@ -22,7 +31,7 @@ export function paginatedMongoQuery<T = any>(
 
   return model.aggregatePaginate(
     model.aggregate(
-      aggregationPaginatedQueryPipeline(
+      createPaginatedQueryAggregationPipeline(
         aggregationPaginatedQueryPipelineOptions,
       ),
     ),
@@ -33,18 +42,39 @@ export function paginatedMongoQuery<T = any>(
   );
 }
 
-function aggregationPaginatedQueryPipeline(
+/*
+ * stage ids:
+ * 1. search
+ * 2. idFilter
+ * 3. populate
+ * 4. filter
+ * 5. regexFilter
+ * 6. sort
+ * */
+export function createPaginatedQueryAggregationPipeline(
   options: AggregationPaginatedQueryPipelineOptions,
 ): PipelineStage[] {
   return [
-    ...(options.search ? aggregationSearch(options.search) : []),
-    ...(options.filter && options.filter.idFilter
-      ? aggregationQuery(options.filter.idFilter)
+    ...(options.customStages?.first || []),
+
+    // search stages
+    ...(options.customStages?.preSearch || []),
+    ...(options.search
+      ? createSearchAggregationPipelineStages(options.search)
       : []),
+
+    // idFilter stages
+    ...(options.customStages?.preIdFilter || []),
+    ...(options.filter && options.filter.idFilter
+      ? createFilterAggregationPipelineStages(options.filter.idFilter)
+      : []),
+
+    // populate stages
+    ...(options.customStages?.prePopulate || []),
     ...(options.populate
       ? options.populate
           .map((population) =>
-            aggregationPopulate(
+            createPopulateAggregationPipelineStages(
               population.localField,
               population.targetCollection,
               population.projection,
@@ -54,17 +84,30 @@ function aggregationPaginatedQueryPipeline(
           )
           .flat()
       : []),
+
+    // filter stages
+    ...(options.customStages?.preFilter || []),
     ...(options.filter && options.filter.normalFilter
-      ? aggregationQuery(options.filter.normalFilter)
+      ? createFilterAggregationPipelineStages(options.filter.normalFilter)
       : []),
+
+    // regexFilter stages
+    ...(options.customStages?.preRegexFilter || []),
     ...(options.filter?.regexFilter
-      ? aggregationRegexMatch(options.filter.regexFilter)
+      ? createRegexFilterAggregationPipelineStages(options.filter.regexFilter)
       : []),
-    ...(options.sort ? aggregationSort(options.sort) : []),
+
+    // sort stages
+    ...(options.customStages?.preSort || []),
+    ...(options.sort ? createSortAggregationPipelineStages(options.sort) : []),
+
+    ...(options.customStages?.last || []),
   ];
 }
 
-function aggregationSort(sortOrder: SortOrder[]): PipelineStage[] {
+export function createSortAggregationPipelineStages(
+  sortOrder: SortOrder[],
+): PipelineStage[] {
   if (sortOrder.length > 0) {
     const sortMap = new Map();
     sortOrder.forEach((entry) => {
@@ -94,7 +137,7 @@ function aggregationSort(sortOrder: SortOrder[]): PipelineStage[] {
   }
 }
 
-function aggregationPopulate(
+export function createPopulateAggregationPipelineStages(
   localField: string,
   targetCollection: string,
   projection: PopulationOptions['projection'] = {},
@@ -130,7 +173,9 @@ function aggregationPopulate(
   ];
 }
 
-function aggregationQuery(filter: QueryFilterConcreteParams): PipelineStage[] {
+function createFilterAggregationPipelineStages(
+  filter: QueryFilterConcreteParams,
+): PipelineStage[] {
   if (Object.keys(filter).length > 0) {
     const normalFilters = pickBy(
       filter,
@@ -163,7 +208,7 @@ function aggregationQuery(filter: QueryFilterConcreteParams): PipelineStage[] {
   }
 }
 
-function aggregationRegexMatch(
+function createRegexFilterAggregationPipelineStages(
   filter: QueryFilterConcreteParams,
 ): PipelineStage[] {
   if (Object.keys(filter).length > 0) {
@@ -200,7 +245,9 @@ function aggregationRegexMatch(
   }
 }
 
-function aggregationSearch(search: string): PipelineStage[] {
+function createSearchAggregationPipelineStages(
+  search: string,
+): PipelineStage[] {
   return isString(search) && search.length > 0
     ? [
         {
