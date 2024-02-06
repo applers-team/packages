@@ -1,4 +1,11 @@
-import { Controller, Req, Res, UseFilters, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Query,
+  Req,
+  Res,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { CookieTokenService } from '../auth/cookie-token.service';
 import { RequestMagicLinkGuard } from './request-magic-link.guard';
@@ -29,17 +36,23 @@ export class LoginController {
   async validate(
     @Res({ passthrough: true }) response: Response,
     @ExtractEmailFromMagicLink() email: string,
+    @Query('callbackUrl') callbackUrl: string,
   ) {
     const { frontendUrls } = this.config;
 
     const { userId } = await this.util.findOrCreateByEmail({ email });
+    console.log(callbackUrl);
 
     await this.cookieTokenService.prepareResponseWithNewTokens(
       response,
       userId,
     );
 
-    response.redirect(frontendUrls.auth.redirect.success);
+    if (callbackUrl !== 'default') {
+      response.redirect(callbackUrl);
+    } else {
+      response.redirect(frontendUrls.auth.redirect.success);
+    }
     return;
   }
 

@@ -4,6 +4,7 @@ import {
   Module,
   NestModule,
   Post,
+  RequestMethod,
 } from '@nestjs/common';
 import { MagicLinkStrategy } from './magic-link/magic-link.strategy';
 import { RequestMagicLinkGuard } from './magic-link/request-magic-link.guard';
@@ -26,6 +27,7 @@ import {
   DefaultRefreshTokenCookieKey,
 } from './constants';
 import { FullAuthMagicLinkConfig } from './types';
+import { callbackUrlMiddleware } from './magic-link/callbackUrl.middleware';
 
 @Module({
   imports: [JwtModule],
@@ -147,6 +149,11 @@ export class AuthMagicLinkModule
         ...(paths.auth?.exclude ?? []),
       )
       .forRoutes('*');
+
+    consumer.apply(callbackUrlMiddleware).forRoutes({
+      path: paths.magicLink.request,
+      method: RequestMethod.POST,
+    });
   }
 
   constructor(

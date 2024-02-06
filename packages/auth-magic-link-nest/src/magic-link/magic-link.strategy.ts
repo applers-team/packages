@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-magic-link';
-import { AuthMagicLinkUtil } from './export.types';
+import { AuthMagicLinkUtil, MagicLinkUser } from './export.types';
 import {
   InjectAuthMagicLinkConfig,
   InjectAuthMagicLinkUtil,
 } from '../module.util';
-import { MagicLinkUser } from './types';
 import { FullAuthMagicLinkConfig } from '../types';
 import URI from 'urijs';
 
@@ -21,7 +20,7 @@ export class MagicLinkStrategy extends PassportStrategy(Strategy) {
     super(
       {
         secret: magicLinkToken.secret,
-        userFields: ['email'],
+        userFields: ['email', 'callbackUrl'],
         tokenField: 'token',
         ttl: magicLinkToken.ttl,
       },
@@ -34,7 +33,7 @@ export class MagicLinkStrategy extends PassportStrategy(Strategy) {
                 this.config.paths.proxy ?? '',
                 this.config.paths.magicLink.validate,
               ])
-              .query({ token })
+              .query({ token, callbackUrl: user.callbackUrl })
               .toString(),
           token,
         );

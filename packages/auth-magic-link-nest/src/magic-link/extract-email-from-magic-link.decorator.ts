@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { Request } from 'express';
-import { MagicLinkUser } from './types';
+import { MagicLinkUser } from './export.types';
 
 export const ExtractEmailFromMagicLink = createParamDecorator(
   (_, ctx: ExecutionContext) => {
