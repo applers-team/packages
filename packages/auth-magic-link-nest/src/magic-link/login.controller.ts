@@ -41,14 +41,13 @@ export class LoginController {
     const { frontendUrls } = this.config;
 
     const { userId } = await this.util.findOrCreateByEmail({ email });
-    console.log(callbackUrl);
 
     await this.cookieTokenService.prepareResponseWithNewTokens(
       response,
       userId,
     );
 
-    if (callbackUrl !== 'default') {
+    if (callbackUrl) {
       response.redirect(callbackUrl);
     } else {
       response.redirect(frontendUrls.auth.redirect.success);

@@ -27,7 +27,7 @@ import {
   DefaultRefreshTokenCookieKey,
 } from './constants';
 import { FullAuthMagicLinkConfig } from './types';
-import { callbackUrlMiddleware } from './magic-link/callbackUrl.middleware';
+import { callbackUrlMiddleware } from './magic-link/callback-url.middleware';
 
 @Module({
   imports: [JwtModule],

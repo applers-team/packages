@@ -8,6 +8,7 @@ import {
 } from '../module.util';
 import { FullAuthMagicLinkConfig } from '../types';
 import URI from 'urijs';
+import { DefaultCallbackUrl } from '../constants';
 
 // this strategy is executed when calling the "VerifyMagicLinkGuard"
 @Injectable()
@@ -33,7 +34,13 @@ export class MagicLinkStrategy extends PassportStrategy(Strategy) {
                 this.config.paths.proxy ?? '',
                 this.config.paths.magicLink.validate,
               ])
-              .query({ token, callbackUrl: user.callbackUrl })
+              .query({
+                token,
+                ...(user.callbackUrl &&
+                  user.callbackUrl !== DefaultCallbackUrl && {
+                    callbackUrl: user.callbackUrl,
+                  }),
+              })
               .toString(),
           token,
         );
