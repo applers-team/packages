@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-magic-link';
-import { AuthMagicLinkUtil, MagicLinkUser } from './export.types';
+import { AuthMagicLinkUtil, UserProvidedQueryParams } from './export.types';
 import {
   InjectAuthMagicLinkConfig,
   InjectAuthMagicLinkUtil,
@@ -9,6 +9,11 @@ import {
 import { FullAuthMagicLinkConfig } from '../types';
 import URI from 'urijs';
 import { DefaultCallbackUrl } from '../constants';
+
+const queryParamsToExtract: Record<keyof UserProvidedQueryParams, null> = {
+  email: null,
+  callbackUrl: null,
+};
 
 // this strategy is executed when calling the "VerifyMagicLinkGuard"
 @Injectable()
@@ -21,13 +26,16 @@ export class MagicLinkStrategy extends PassportStrategy(Strategy) {
     super(
       {
         secret: magicLinkToken.secret,
-        userFields: ['email', 'callbackUrl'],
+        userFields: Object.keys(queryParamsToExtract),
         tokenField: 'token',
         ttl: magicLinkToken.ttl,
       },
-      async (user: MagicLinkUser, token: string): Promise<void> => {
+      async (
+        queryParams: UserProvidedQueryParams,
+        token: string,
+      ): Promise<void> => {
         this.util.sendMagicLink(
-          user,
+          queryParams,
           (frontendUrl) =>
             URI(frontendUrl)
               .segment([
@@ -36,9 +44,9 @@ export class MagicLinkStrategy extends PassportStrategy(Strategy) {
               ])
               .query({
                 token,
-                ...(user.callbackUrl &&
-                  user.callbackUrl !== DefaultCallbackUrl && {
-                    callbackUrl: user.callbackUrl,
+                ...(queryParams.callbackUrl &&
+                  queryParams.callbackUrl !== DefaultCallbackUrl && {
+                    callbackUrl: queryParams.callbackUrl,
                   }),
               })
               .toString(),
@@ -47,8 +55,8 @@ export class MagicLinkStrategy extends PassportStrategy(Strategy) {
       },
       // this is the first function which is executed
       // the return value is provided to the function above
-      (user: MagicLinkUser): MagicLinkUser => {
-        return { ...user, email: user.email.toLowerCase() };
+      (queryParams: UserProvidedQueryParams): UserProvidedQueryParams => {
+        return { ...queryParams, email: queryParams.email.toLowerCase() };
       },
     );
   }
