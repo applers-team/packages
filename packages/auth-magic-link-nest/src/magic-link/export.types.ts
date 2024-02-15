@@ -1,5 +1,9 @@
 import { AuthMagicLinkConfig } from '../environment.types';
 
+export interface UserProvidedQueryParams {
+  email: string;
+  callbackUrl: string;
+}
 export interface CreateUserAttributes {
   email: string;
 }
@@ -25,7 +29,7 @@ export interface AuthMagicLinkUtil<DBUser = any> {
     refreshTokenHash: string,
   ) => void | Promise<void>;
   sendMagicLink: (
-    user: DBUser,
+    queryParams: UserProvidedQueryParams,
     loginLinkGenerator: LoginLinkGeneratorFunction,
     token: string,
   ) => void | Promise<void>;
