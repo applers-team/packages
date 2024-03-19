@@ -1,6 +1,5 @@
 import { QueryFilterParams, SortOrder } from './decorators';
 import mongoose, { PipelineStage } from 'mongoose';
-import { SetPropType } from './util.set-prop-type';
 
 export type PopulationOptions = {
   localField: string;
@@ -38,8 +37,16 @@ export type PaginatedMongoQueryOptions =
   };
 
 export type PaginatedQueryModel<T> = mongoose.AggregatePaginateModel<T>;
-export type PaginatedQueryResult<T> = SetPropType<
-  mongoose.AggregatePaginateResult<T>,
-  'page',
-  number
->;
+// TODO: derive from mongoose.AggregatePaginateResult<T>
+export type PaginatedQueryResult<T> = {
+  docs: T[];
+  totalDocs: number;
+  limit: number;
+  page: number;
+  totalPages: number;
+  nextPage?: number | null | undefined;
+  prevPage?: number | null | undefined;
+  pagingCounter: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+};
