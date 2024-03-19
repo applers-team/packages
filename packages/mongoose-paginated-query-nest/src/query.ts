@@ -22,10 +22,10 @@ import {
  * 5. regexFilter
  * 6. sort
  * */
-export function paginatedMongoQuery<T = any>(
-  model: PaginatedQueryModel<T>,
+export function paginatedMongoQuery<ModelType = any, ReturnType = ModelType>(
+  model: PaginatedQueryModel<ModelType>,
   options: PaginatedMongoQueryOptions,
-): Promise<PaginatedQueryResult<T>> {
+): Promise<PaginatedQueryResult<ReturnType>> {
   const { page, pageSize, ...aggregationPaginatedQueryPipelineOptions } =
     options;
 
@@ -39,7 +39,7 @@ export function paginatedMongoQuery<T = any>(
       page,
       limit: pageSize,
     },
-  );
+  ) as Promise<PaginatedQueryResult<ReturnType>>;
 }
 
 /*

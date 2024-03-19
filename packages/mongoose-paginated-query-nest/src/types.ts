@@ -35,4 +35,15 @@ export type PaginatedMongoQueryOptions =
   };
 
 export type PaginatedQueryModel<T> = mongoose.AggregatePaginateModel<T>;
-export type PaginatedQueryResult<T> = mongoose.AggregatePaginateResult<T>;
+export type PaginatedQueryResult<T> = {
+  docs: T[];
+  totalDocs: number;
+  limit: number;
+  page: number;
+  totalPages: number;
+  nextPage?: number | null | undefined;
+  prevPage?: number | null | undefined;
+  pagingCounter: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+};
