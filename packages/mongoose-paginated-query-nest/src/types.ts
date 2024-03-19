@@ -7,6 +7,8 @@ export type PopulationOptions = {
   projection?: Record<string, 1 | -1>;
   targetIsArray?: boolean;
   targetField?: string;
+  populateToField?: string;
+  nested?: PopulationOptions[];
 };
 
 export type AggregationPaginatedQueryPipelineCustomStages = {

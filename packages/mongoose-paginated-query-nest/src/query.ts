@@ -73,14 +73,8 @@ export function createPaginatedQueryAggregationPipeline(
     ...(options.customStages?.prePopulate || []),
     ...(options.populate
       ? options.populate
-          .map((population) =>
-            createPopulateAggregationPipelineStages(
-              population.localField,
-              population.targetCollection,
-              population.projection,
-              population.targetIsArray,
-              population.targetField,
-            ),
+          .map((populationOptions) =>
+            createPopulateAggregationPipelineStages(populationOptions),
           )
           .flat()
       : []),
@@ -137,34 +131,47 @@ export function createSortAggregationPipelineStages(
   }
 }
 
-export function createPopulateAggregationPipelineStages(
-  localField: string,
-  targetCollection: string,
-  projection: PopulationOptions['projection'] = {},
-  targetIsArray = false,
-  targetField = '_id',
-): PipelineStage[] {
+export function createPopulateAggregationPipelineStages({
+  localField,
+  targetCollection,
+  projection,
+  targetIsArray,
+  targetField,
+  populateToField,
+  nested,
+}: PopulationOptions): Exclude<
+  PipelineStage,
+  PipelineStage.Merge | PipelineStage.Out
+>[] {
   return [
     {
       $lookup: {
         from: targetCollection,
         localField: localField,
-        foreignField: targetField,
-        as: localField,
-        ...(Object.keys(projection).length > 0 && {
-          pipeline: [
-            {
-              $project: projection,
-            },
-          ],
+        foreignField: targetField ?? '_id',
+        as: populateToField ?? localField,
+        ...(nested && {
+          pipeline: nested
+            .map((nestedPopulationOptions) =>
+              createPopulateAggregationPipelineStages(nestedPopulationOptions),
+            )
+            .flat(),
         }),
+        ...(projection &&
+          Object.keys(projection).length > 0 && {
+            pipeline: [
+              {
+                $project: projection,
+              },
+            ],
+          }),
       },
     },
     ...(!targetIsArray
       ? [
           {
             $unwind: {
-              path: `$${localField}`,
+              path: `$${populateToField ?? localField}`,
               preserveNullAndEmptyArrays: true,
             },
           },
