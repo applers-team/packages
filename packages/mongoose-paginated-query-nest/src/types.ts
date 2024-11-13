@@ -1,4 +1,4 @@
-import { QueryFilterParams, SortOrder } from './decorators';
+import { QueryFilterParams, QuerySearchParams, SortOrder } from './decorators';
 import mongoose, { PipelineStage } from 'mongoose';
 
 export type PopulationOptions = {
@@ -25,7 +25,7 @@ export type AggregationPaginatedQueryPipelineCustomStages = {
 export type AggregationPaginatedQueryPipelineOptions = {
   populate?: PopulationOptions[];
   filter?: QueryFilterParams;
-  search?: string;
+  search?: QuerySearchParams;
   sort?: SortOrder[];
   customStages?: AggregationPaginatedQueryPipelineCustomStages;
 };

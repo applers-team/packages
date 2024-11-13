@@ -1,8 +1,9 @@
-import { isString, mapValues, pickBy } from 'lodash';
+import { mapValues, pickBy } from 'lodash';
 import { PipelineStage } from 'mongoose';
 import {
   IncludeFilterSuffix,
   QueryFilterConcreteParams,
+  QuerySearchParams,
   SortOrder,
 } from './decorators';
 import {
@@ -253,20 +254,17 @@ function createRegexFilterAggregationPipelineStages(
 }
 
 function createSearchAggregationPipelineStages(
-  search: string,
+  search: QuerySearchParams,
 ): PipelineStage[] {
-  return isString(search) && search.length > 0
+  return Object.keys(search).length > 0
     ? [
         {
           $match: {
-            $text: {
-              $search: search,
-              $caseSensitive: false,
-              $diacriticSensitive: false,
-            },
+            $or: Object.keys(search).map((searchKey) => ({
+              [searchKey]: { $regex: new RegExp(search[searchKey], 'i') },
+            })),
           },
         },
-        { $sort: { score: { $meta: 'textScore' } } },
       ]
     : [];
 }
