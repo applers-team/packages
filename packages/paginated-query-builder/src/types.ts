@@ -5,6 +5,8 @@ export interface Sorting {
   direction: SortDirection;
 }
 
+export type SearchOptions = Record<string, unknown>;
+
 export type FilterOptions = Record<string, unknown>;
 
 export interface PaginatedQueryUrlPathPaginationOptions {
@@ -16,5 +18,5 @@ export interface PaginatedQueryUrlPathOptions {
   pagination?: PaginatedQueryUrlPathPaginationOptions;
   sort?: Sorting[];
   filter?: FilterOptions;
-  search?: string;
+  search?: SearchOptions;
 }

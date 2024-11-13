@@ -1,5 +1,10 @@
-import { isPlainObject, isString } from 'lodash';
-import { FilterOptions, PaginatedQueryUrlPathOptions, Sorting } from './types';
+import { isPlainObject } from 'lodash';
+import {
+  FilterOptions,
+  PaginatedQueryUrlPathOptions,
+  SearchOptions,
+  Sorting,
+} from './types';
 import {
   DefaultFilterKeyInUrl,
   DefaultPageKeyInUrl,
@@ -11,20 +16,20 @@ import {
 export function createPaginatedQueryUrlPath(
   path: string,
   { pagination, sort, filter, search }: PaginatedQueryUrlPathOptions,
-  pageKeyInUrl = DefaultPageKeyInUrl,
-  pageSizeKeyInUrl = DefaultPageSizeKeyInUrl,
-  sortingKeyInUrl = DefaultSortingKeyInUrl,
-  filterKeyInUrl = DefaultFilterKeyInUrl,
-  searchKeyInUrl = DefaultSearchKeyInUrl,
-): string {
+): // pageKeyInUrl = DefaultPageKeyInUrl,
+// pageSizeKeyInUrl = DefaultPageSizeKeyInUrl,
+// sortingKeyInUrl = DefaultSortingKeyInUrl,
+// filterKeyInUrl = DefaultFilterKeyInUrl,
+// searchKeyInUrl = DefaultSearchKeyInUrl,
+string {
   return createQueryUrlPath(path, {
     ...(pagination && {
-      [pageKeyInUrl]: pagination.page.toString(),
-      [pageSizeKeyInUrl]: pagination.pageSize.toString(),
+      [DefaultPageKeyInUrl]: pagination.page.toString(),
+      [DefaultPageSizeKeyInUrl]: pagination.pageSize.toString(),
     }),
-    ...(sort && sortingToQueryParam(sort, sortingKeyInUrl)),
-    ...(filter && filterToQueryParam(filter, filterKeyInUrl)),
-    ...(search && searchToQueryParam(search, searchKeyInUrl)),
+    ...(sort && sortingToQueryParam(sort, DefaultSortingKeyInUrl)),
+    ...(filter && filterToQueryParam(filter, DefaultFilterKeyInUrl)),
+    ...(search && searchToQueryParam(search, DefaultSearchKeyInUrl)),
   });
 }
 
@@ -77,10 +82,20 @@ export function filterToQueryParam(
 }
 
 export function searchToQueryParam(
-  search: string,
+  search: SearchOptions,
   searchKeyInUrl = DefaultSearchKeyInUrl,
 ) {
-  return isString(search) && search.length > 0
-    ? { [searchKeyInUrl]: search }
+  const searchKeys = search ? Object.keys(search) : [];
+
+  return searchKeys.length > 0
+    ? searchKeys.reduce(
+        (params, searchKey) => ({
+          ...params,
+          [`${searchKeyInUrl}.${searchKey}`]: isPlainObject(search[searchKey])
+            ? JSON.stringify(search[searchKey])
+            : search[searchKey],
+        }),
+        {},
+      )
     : {};
 }
