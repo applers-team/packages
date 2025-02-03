@@ -45,9 +45,9 @@ export function paginatedMongoQuery<ModelType = any, ReturnType = ModelType>(
 
 /*
  * stage ids:
- * 1. search
- * 2. idFilter
- * 3. populate
+ * 1. idFilter
+ * 2. populate
+ * 3. search
  * 4. filter
  * 5. regexFilter
  * 6. sort
@@ -57,12 +57,6 @@ export function createPaginatedQueryAggregationPipeline(
 ): PipelineStage[] {
   return [
     ...(options.customStages?.first || []),
-
-    // search stages
-    ...(options.customStages?.preSearch || []),
-    ...(options.search
-      ? createSearchAggregationPipelineStages(options.search)
-      : []),
 
     // idFilter stages
     ...(options.customStages?.preIdFilter || []),
@@ -78,6 +72,12 @@ export function createPaginatedQueryAggregationPipeline(
             createPopulateAggregationPipelineStages(populationOptions),
           )
           .flat()
+      : []),
+
+    // search stages
+    ...(options.customStages?.preSearch || []),
+    ...(options.search
+      ? createSearchAggregationPipelineStages(options.search)
       : []),
 
     // filter stages
