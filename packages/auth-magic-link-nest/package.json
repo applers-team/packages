@@ -14,17 +14,19 @@
   "dependencies": {
     "@golevelup/nestjs-common": "^6.0.0",
     "@golevelup/nestjs-modules": "^2.0.0",
-    "@nestjs/common": "^11.0.0",
-    "@nestjs/core": "^11.0.0",
-    "@nestjs/jwt": "^11.0.0",
-    "@nestjs/passport": "^11.0.0",
     "cookie-parser": "^1.4.7",
     "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.2",
     "passport": "^0.7.0",
     "passport-magic-link": "^2.1.0",
-    "rxjs": "^7.8.1",
     "urijs": "^1.19.11"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/passport": "^11.0.0",
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",

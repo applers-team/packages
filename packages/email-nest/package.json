@@ -13,9 +13,11 @@
   "dependencies": {
     "@golevelup/nestjs-common": "^6.0.0",
     "@golevelup/nestjs-modules": "^2.0.0",
+    "nodemailer": "^6.9.4"
+  },
+  "peerDependencies": {
     "@nestjs/common": "^11.0.0",
     "@nestjs/core": "^11.0.0",
-    "nodemailer": "^6.9.4",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
