@@ -139,7 +139,7 @@ export class AuthMagicLinkModule
     // should be ok to apply it on all routes
     // mms applied the middleware globally by using "onModuleInit"
     // and injecting the express "app" via the "HttpAdapterHost"
-    consumer.apply(cookieParser()).forRoutes('*');
+    consumer.apply(cookieParser()).forRoutes('{*path}');
 
     consumer
       .apply(AuthenticationMiddleware)
@@ -148,7 +148,7 @@ export class AuthMagicLinkModule
         paths.magicLink.validate,
         ...(paths.auth?.exclude ?? []),
       )
-      .forRoutes('*');
+      .forRoutes('{*path}');
 
     consumer.apply(callbackUrlMiddleware).forRoutes({
       path: paths.magicLink.request,
